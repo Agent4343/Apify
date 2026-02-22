@@ -4,59 +4,67 @@ Search for high-paying oil and gas jobs using [Apify](https://console.apify.com/
 
 Built for experienced **Production Operators, Control Room Operators, Production Supervisors, Safety Leads, and Safety Advisors** looking for opportunities in Newfoundland Canada and worldwide.
 
-## Setup
+## Deploy to Railway
 
-1. **Get an Apify API token:**
-   - Sign up at https://console.apify.com
-   - Go to **Settings > Integrations** to find your API token
-   - Apify gives you $5/month free credit
+### 1. Get an Apify API token
+- Sign up at https://console.apify.com
+- Go to **Settings > Integrations** to find your API token
+- Apify gives you $5/month free credit
 
-2. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 2. Deploy on Railway
+1. Push this repo to GitHub
+2. Go to [railway.app](https://railway.app) and create a new project
+3. Select **"Deploy from GitHub repo"** and connect this repository
+4. Railway will auto-detect Python and install dependencies
 
-3. **Set your API token** (choose one):
-   ```bash
-   # Option A: Environment variable (recommended)
-   export APIFY_TOKEN=your_token_here
+### 3. Set environment variable
+In your Railway project dashboard:
+1. Go to your service -> **Variables** tab
+2. Add: `APIFY_TOKEN` = `your_apify_token_here`
+3. Railway will redeploy automatically
 
-   # Option B: Edit the config file
-   # Open job_search_config.py and set APIFY_TOKEN
-   ```
+That's it! Your job search app will be live at the Railway-provided URL.
 
-## Usage
+## How It Works
+
+The web app lets you:
+- Pick which **job titles** to search (your core roles are pre-selected)
+- Pick which **locations** to search (Newfoundland, Canada, or worldwide hubs)
+- Choose the **platform** (LinkedIn + Indeed + Glassdoor, or individual)
+- Filter by **time posted**, sort by **salary**, filter by **platform**
+- **Download results** as CSV or JSON
+
+Searches run in the background with a live progress bar. Results show job title, company, location, salary (when available), and direct apply links.
+
+## Local Development
 
 ```bash
-# Full search - all roles, all locations (Newfoundland + worldwide)
-python job_search.py
+# Install dependencies
+pip install -r requirements.txt
 
-# Search Newfoundland only
-python job_search.py --location NL
+# Set your token
+export APIFY_TOKEN=your_token_here
 
-# Search all of Canada (NL + Alberta + Fort McMurray)
-python job_search.py --location canada
+# Run the web app locally
+python app.py
+# Opens at http://localhost:5000
 
-# Search international high-paying hubs only (Norway, Australia, Middle East, etc.)
-python job_search.py --worldwide
+# Or use the CLI version
+python job_search.py --location NL --quick
+```
 
-# Quick search - core roles only (fewer API calls, saves credits)
-python job_search.py --quick
+### CLI Usage
 
-# Quick search, Newfoundland only
-python job_search.py --quick --location NL
-
-# Use LinkedIn-specific scraper
-python job_search.py --actor linkedin
-
-# Use Indeed-specific scraper
-python job_search.py --actor indeed
-
-# Custom job titles
-python job_search.py --titles "Drilling Engineer" "Rig Manager" "FPSO Operator"
-
-# Preview what would be searched (no API calls)
-python job_search.py --dry-run
+```bash
+python job_search.py                          # Full search all locations
+python job_search.py --location NL            # Newfoundland only
+python job_search.py --location canada        # All Canadian locations
+python job_search.py --worldwide              # International hubs only
+python job_search.py --quick                  # Core roles only (saves credits)
+python job_search.py --quick --location NL    # Quick search, NL only
+python job_search.py --actor linkedin         # Use LinkedIn-specific actor
+python job_search.py --actor indeed           # Use Indeed-specific actor
+python job_search.py --dry-run                # Preview without running
 ```
 
 ## Job Titles Searched
@@ -98,19 +106,27 @@ python job_search.py --dry-run
 - **Brazil** - Rio de Janeiro (Pre-Salt)
 - **Trinidad and Tobago** - Port of Spain
 
-## Output
+## Project Structure
 
-Results are saved to the `results/` directory as CSV and JSON:
-- `results/oil_gas_jobs_YYYYMMDD_HHMMSS.csv`
-- `results/oil_gas_jobs_YYYYMMDD_HHMMSS.json`
+```
+├── app.py                  # Flask web app (Railway runs this)
+├── job_search.py           # CLI version
+├── job_search_config.py    # Job titles, locations, Apify actor config
+├── templates/
+│   └── index.html          # Web UI
+├── Procfile                # Railway process definition
+├── railway.json            # Railway deployment config
+├── runtime.txt             # Python version
+├── requirements.txt        # Python dependencies
+└── README.md
+```
 
-## Customization
+## Environment Variables
 
-Edit `job_search_config.py` to:
-- Add/remove job titles
-- Add/remove locations
-- Change the default actor (multi-platform, LinkedIn, Indeed)
-- Adjust max results and date filters
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `APIFY_TOKEN` | Yes | Your Apify API token from https://console.apify.com/account/integrations |
+| `PORT` | No | Auto-set by Railway (default: 5000 locally) |
 
 ## Apify Actors Used
 

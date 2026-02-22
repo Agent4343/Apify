@@ -3,11 +3,14 @@ Configuration for Oil & Gas Job Search
 Customize your job titles, locations, and search parameters here.
 """
 
+import os
+
 # =============================================================================
 # YOUR APIFY API TOKEN
 # Get yours at: https://console.apify.com/account/integrations
+# On Railway: set APIFY_TOKEN in your project's Variables tab
 # =============================================================================
-APIFY_TOKEN = "YOUR_APIFY_TOKEN_HERE"
+APIFY_TOKEN = os.environ.get("APIFY_TOKEN", "YOUR_APIFY_TOKEN_HERE")
 
 # =============================================================================
 # JOB TITLES TO SEARCH
