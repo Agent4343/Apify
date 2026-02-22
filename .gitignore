@@ -1,0 +1,13 @@
+# Results output
+results/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.venv/
+
+# Don't commit API tokens
+# Make sure to update job_search_config.py with your token locally
